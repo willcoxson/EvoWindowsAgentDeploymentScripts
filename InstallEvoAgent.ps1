@@ -126,46 +126,60 @@ param(
     [Parameter(ParameterSetName='CommandLineConfig')]
     [string] $FailSafeUser,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[uint32]] $MFATimeOut,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [ValidateSet('10', '90', '100', 'SecureLogin', 'ElevatedLogin', 'SecureAndElevatedLogin')]
     [string] $CredentialMode,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [ValidateSet(0, 1, $false, $true)] $OnlyEvoLoginCredential,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [switch] $NoElevatedRDP,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[bool]] $DisableUpdate,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[int]] [ValidateSet(0, 1)] $JitMode,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[int]] [ValidateSet(0, 1)] $EndUserElevation,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[int]] [ValidateSet(0, 1)] $UserAdminEscalation,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[int]] [ValidateSet(0, 1)] $RememberLastUserName,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[int]] [ValidateSet(0, 1, 2)] $UACExtension,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[int]] [ValidateSet(0, 1)] $DisableEvoLogin,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[int]] [ValidateSet(0, 1)] $DisableEvoUac,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[int]] [ValidateSet(0, 1)] $UnlimitedExtendedUacSession,
 
+    [Parameter(ParameterSetName='DeploymentTokenConfig')]
     [Parameter(ParameterSetName='CommandLineConfig')]
     [Nullable[int]] [ValidateSet(0, 1)] $PersistentRequest,
 
