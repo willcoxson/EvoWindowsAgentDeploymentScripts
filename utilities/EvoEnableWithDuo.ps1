@@ -20,7 +20,7 @@ Lists the credential providers in the Duo whitelist without modifying it
 
 #>
 
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName='HelpConfig')]
 param(
     [Parameter(ParameterSetName='AddConfig')]
     [switch] $Add,
@@ -51,6 +51,10 @@ function Show-Help {
     Write-Host "  -Help   Displays this usage information." 
 }
 
+if (-not $Add -and -not $Remove -and -not $List -and -not $Help) {
+    $Help = $true
+}
+
 if ($Help) {
     Show-Help
     return
@@ -62,7 +66,7 @@ function IsRunningAsAdministrator {
 }
 
 
-if (-not (IsRunningAsAdministrator) -and (-not $list)){
+if (-not (IsRunningAsAdministrator) -and (-not $List)){
     throw "Need to run this script as an Administrator"
 }
 
@@ -70,57 +74,64 @@ $DuoKeyName = 'Software\Duo Security\DuoCredProv'
 $WhiteListName = 'ProvidersWhitelist'
 
 $writeEnabled = -not $List
-$Key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($DuoKeyName, $writeEnabled)
+try {
+    $Key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($DuoKeyName, $writeEnabled)
 
-if (-not $Key) {
-    throw "Duo not detected/installed"
-}
+    if (-not $Key) {
+        throw "Duo not detected/installed"
+    }
 
-$EvoCredProviderClsid = '{a81f782d-cf30-439a-bad8-645d9862ea99}'
-$Whitelist = $Key.GetValue($WhiteListName)
+    $EvoCredProviderClsid = '{a81f782d-cf30-439a-bad8-645d9862ea99}'
+    $Whitelist = $Key.GetValue($WhiteListName)
 
-function Notify($obj)
-{
-    Write-Host -fore Green -back Black $obj
-}
+    function Notify($obj)
+    {
+        Write-Host -fore Green -back Black $obj
+    }
 
-function AddEvo
-{
-    if (-not $Whitelist ) {
-        $Key.SetValue($WhiteListName, [string[]] @($EvoCredProviderClsid))
-    } else {
-        if (-not ($Whitelist -contains $EvoCredProviderClsid)){
-            $NewProviders = [string[]] ($Whitelist + $EvoCredProviderClsid)
-            $Key.SetValue($WhiteListName, $NewProviders)
+    function AddEvo
+    {
+        if (-not $Whitelist ) {
+            $Key.SetValue($WhiteListName, [string[]] @($EvoCredProviderClsid))
         } else {
-            Notify 'Already contains Evo Agent'
+            if (-not ($Whitelist -contains $EvoCredProviderClsid)){
+                $NewProviders = [string[]] ($Whitelist + $EvoCredProviderClsid)
+                $Key.SetValue($WhiteListName, $NewProviders)
+            } else {
+                Notify 'Already contains Evo Agent'
+            }
         }
     }
-}
 
-function RemoveEvo
-{
-    if (-not $Whitelist) {
-        Notify 'No existing Duo WhiteList'
-    } else {
-        $idx = $Whitelist.IndexOf($EvoCredProviderClsid)
-        if ($idx -ne -1) {
-            $List = [System.Collections.ArrayList]::new($Whitelist)
-            $List.RemoveAt($idx)
+    function RemoveEvo
+    {
+        if (-not $Whitelist) {
+            Notify 'No existing Duo WhiteList'
+        } else {
+            $idx = $Whitelist.IndexOf($EvoCredProviderClsid)
+            if ($idx -ne -1) {
+                $List = [System.Collections.ArrayList]::new($Whitelist)
+                $List.RemoveAt($idx)
             
-            $RemovedProviders = [string[]] ($List.ToArray())
-            $Key.SetValue($WhiteListName, $RemovedProviders)
-        } else {
-            Notify 'Evo not found in Duo WhiteList'
+                $RemovedProviders = [string[]] ($List.ToArray())
+                $Key.SetValue($WhiteListName, $RemovedProviders)
+            } else {
+                Notify 'Evo not found in Duo WhiteList'
+            }
         }
     }
-}
 
-if ($Add) {
-    AddEvo
-} elseif ($Remove) {
-    RemoveEvo
-}
+    if ($Add) {
+        AddEvo
+    } elseif ($Remove) {
+        RemoveEvo
+    }
 
-$Value = $Key.GetValue($WhiteListName)
-"Duo WhiteList: $Value"
+    $Value = $Key.GetValue($WhiteListName)
+    "Duo WhiteList: $Value"
+}
+finally {
+    if ($Key) { 
+		$Key.Close()
+	}
+}
