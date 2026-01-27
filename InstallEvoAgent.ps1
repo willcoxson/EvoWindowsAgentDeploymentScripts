@@ -554,7 +554,7 @@ function CredProParamMapFromConfig {
         $ParamMap["SOLEPROVIDER"] = 1
     } elseif ($flag -eq $false) {
         $ParamMap["SOLEPROVIDER"] = 0
-    } else {
+    } elseif ($flag -ne $null) {
         Write-Host "Invalid value in Json file for OnlyEvoLoginCredential. Installer will use default value, or original install value."
     }
 
