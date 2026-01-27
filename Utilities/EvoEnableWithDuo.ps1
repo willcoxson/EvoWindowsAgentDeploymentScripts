@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
 Enables Evo Agent with Duo
-Copyright 2022 by Evo Security
+Copyright 2026 by Evo Security Technologies, Inc.
 
 .DESCRIPTION
 Enables the Evo Agent to work alongside Duo when Duo is the sole credential provider. Also has a flag to remove Evo from the Duo whitelist.
